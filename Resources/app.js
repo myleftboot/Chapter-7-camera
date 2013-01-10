@@ -23,7 +23,9 @@ function emailPiccy(_args) {
 	
 	var toSend = Ti.UI.createEmailDialog({});
 	//write the photo to a temp file which we can then attach to the email
-	var photoFile = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'./photo.jpg');
+	
+	if (Ti.Platform.name === 'android') var photoFile = Titanium.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'./photo.jpg');
+	else var photoFile = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'./photo.jpg');
     photoFile.write(_args.media);
 	
 	toSend.subject = 'A photo I took earlier';
@@ -46,7 +48,7 @@ Ti.Media.showCamera({animated: true,
 
 emailFromLibrary.addEventListener('click', function(e) {
 	Ti.Media.openPhotoGallery({
-		autoHide: true,
+		autoHide:   true,
 		mediaTypes: [Ti.Media.MEDIA_TYPE_PHOTO],
 		success:    function(e) {emailPiccy(e)}
 		});
