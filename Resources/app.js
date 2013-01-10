@@ -13,11 +13,25 @@ var win1 = Titanium.UI.createWindow({
 var options = Ti.UI.createView({layout: 'vertical'});
 
 var showCamera = Ti.UI.createButton({title: 'Show Camera'});
+var emailFromLibrary = Ti.UI.createButton({title: 'Email from photo library'});
 
 function showPhoto(_args) {
 	thePhoto.setImage(_args.media);
 }
 
+function emailPiccy(_args) {
+	
+	var toSend = Ti.UI.createEmailDialog({});
+	//write the photo to a temp file which we can then attach to the email
+	var photoFile = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'./camera_photo.jpg');
+    photoFile.write(_args.media);
+	
+	toSend.subject = 'A photo I took earlier';
+	toSend.messageBody = 'Thinking of you...';
+    toSend.addAttachment(photoFile);
+    toSend.open();
+    
+}
 var thePhoto = Ti.UI.createImageView({height: '30%', width: '30%'});
 
 showCamera.addEventListener('click', function (e) {
@@ -30,7 +44,15 @@ Ti.Media.showCamera({animated: true,
 	                 })
 });
 
+emailFromLibrary.addEventListener('click', function(e) {
+	Ti.Media.openPhotoGallery({autoHide: true,
+		                       mediaTypes: [Ti.Media.MEDIA_TYPE_PHOTO],
+		                       success:    function(e) {emailPiccy(e)}
+		                    });
+});
+
 options.add(showCamera);
+options.add(emailFromLibrary);
 options.add(thePhoto);
 win1.add(options);
 win1.open();
