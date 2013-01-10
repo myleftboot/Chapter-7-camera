@@ -22,15 +22,10 @@ function showPhoto(_args) {
 function emailPiccy(_args) {
 	
 	var toSend = Ti.UI.createEmailDialog({});
-	//write the photo to a temp file which we can then attach to the email
-	
-	if (Ti.Platform.name === 'android') var photoFile = Titanium.Filesystem.getFile(Ti.Filesystem.externalStorageDirectory,'./photo.jpg');
-	else var photoFile = Titanium.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory,'./photo.jpg');
-    photoFile.write(_args.media);
 	
 	toSend.subject = 'A photo I took earlier';
 	toSend.messageBody = 'Thinking of you...';
-    toSend.addAttachment(photoFile);
+    toSend.addAttachment(_args.media);
     toSend.open();
     
 }
